@@ -1,0 +1,19 @@
+POST http://localhost:5000/api/v1/auth/signup
+Content-Type:application/json
+
+{
+  "firstName": "fimmy",
+  "lastName": "took",
+  "email": "took@net.net",
+  "password": "quertyuiop"
+}
+
+###
+
+POST http://localhost:5000/api/v1/auth/login
+Content-Type:application/json
+
+{
+  "email": "took@net.net",
+  "password": "quertyuiop"
+}

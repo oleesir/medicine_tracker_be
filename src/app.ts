@@ -1,6 +1,8 @@
+import "regenerator-runtime/runtime";
 import express,{Application,Request,Response} from 'express';
 import routes from "./routes";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 import handleError from "./middleware/errorHandler.middleware";
 
 const app: Application = express();
@@ -9,7 +11,9 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+}
 
 app.use(cookieParser());
 
