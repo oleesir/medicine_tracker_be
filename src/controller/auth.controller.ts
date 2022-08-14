@@ -32,14 +32,13 @@ export const signupUser = async (req: Request, res: Response) => {
     const foundEmail = await pool.query(AuthQueries.checkEmailExists, [email])
 
 
-    if (foundEmail.rows.length) {
+    if (foundEmail.rows[0]) {
         return res.status(409).json({status: "failed", message: "Email already exist"});
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     const newUser = await pool.query(AuthQueries.registerUser, [firstName, lastName, email.toLowerCase(), hashedPassword])
-
 
     const data = {
         id: newUser?.rows[0].id,
@@ -72,7 +71,6 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     const verifyUserPassword = comparePassword(password, foundUser?.rows[0].password);
-    console.log('VERIFY', verifyUserPassword)
 
     if (!verifyUserPassword) {
         return res.status(401).json({status: "failed", message: "email or password is incorrect"});
@@ -95,9 +93,7 @@ export const loginUser = async (req: Request, res: Response) => {
         email: foundUser.rows[0]?.email.toLowerCase(),
     };
 
-
     await pool.query(AuthQueries.updateRefreshToken, [foundUser.rows[0]?.refresh_token, foundUser.rows[0]?.id])
-
 
     res.cookie("accessToken", accessToken, refreshTokenCookieOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
