@@ -35,6 +35,30 @@ export const createPrescription = async (req: Request, res: Response) => {
 
 
 /**
+ * Get all prescriptions for user
+ * @method getAllUsersPrescriptions
+ * @memberof prescriptionController
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
+export const getAllUsersPrescriptions = async (req: Request, res: Response) => {
+    const { id:userId } = (<any>req).user;
+
+    const foundPrescription = await pool.query(PrescriptionQueries.getPrescriptions, [userId]);
+
+    if (foundPrescription.rows.length === 0) {
+        return res.status(404).json({status: "failed", message: "Prescriptions does not exist"});
+    }
+
+    const data = foundPrescription.rows
+
+    return res.status(200).json({status: "success", data});
+
+}
+
+
+/**
  * Get single prescription
  * @method signupUser
  * @memberof authController
@@ -63,6 +87,6 @@ export const getSinglePrescription = async (req: Request, res: Response) => {
 
     };
 
-    return res.status(201).json({status: "success", data});
+    return res.status(200).json({status: "success", data});
 
 }

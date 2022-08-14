@@ -5,7 +5,7 @@ import prescriptionRoute from "./prescriptionRoute";
 const router = Router();
 
 router.use("/auth", authRoute);
-router.use("/prescription",prescriptionRoute)
+router.use("/prescriptions",prescriptionRoute)
 
 
 export default router;
