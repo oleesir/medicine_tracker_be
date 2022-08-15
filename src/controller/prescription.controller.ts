@@ -60,8 +60,8 @@ export const getAllUsersPrescriptions = async (req: Request, res: Response) => {
 
 /**
  * Get single prescription
- * @method signupUser
- * @memberof authController
+ * @method getSinglePrescription
+ * @memberof prescriptionController
  * @param {object} req
  * @param {object} res
  * @returns {(function|object)} Function next() or JSON object
@@ -84,6 +84,54 @@ export const getSinglePrescription = async (req: Request, res: Response) => {
         drugForm: foundPrescription?.rows[0].drug_form,
         withFood: foundPrescription?.rows[0].with_food,
         takeFor: foundPrescription?.rows[0].take_for,
+
+    };
+
+    return res.status(200).json({status: "success", data});
+
+}
+
+
+
+/**
+ * Update prescription
+ * @method updatePrescription
+ * @memberof prescriptionController
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
+export const updatePrescription = async (req: Request, res: Response) => {
+    const {id} = req.params
+    const {drugName, dose, unit, drugForm, withFood,takeFor} = req.body
+
+
+    const foundPrescription = await pool.query(PrescriptionQueries.getPrescription, [id]);
+
+    if (!foundPrescription.rows[0]) {
+        return res.status(404).json({status: "failed", message: "Prescription does not exist"});
+    }
+
+    const updatedPrescription = await pool.query(PrescriptionQueries.updatePrescription,
+        [
+            (drugName || foundPrescription?.rows[0].drug_name),
+            dose || foundPrescription?.rows[0].dose,
+            unit || foundPrescription?.rows[0].unit,
+             drugForm || foundPrescription?.rows[0].drug_form,
+            withFood || foundPrescription?.rows[0].with_food,
+            takeFor || foundPrescription?.rows[0].take_for,
+            id])
+
+
+    const data = {
+        id: foundPrescription?.rows[0].id,
+        drugName: updatedPrescription?.rows[0].drug_name,
+        userId: foundPrescription?.rows[0].user_id,
+        dose: updatedPrescription ?.rows[0].dose,
+        unit:updatedPrescription ?.rows[0].unit,
+        drugForm: updatedPrescription ?.rows[0].drug_form,
+        withFood: updatedPrescription ?.rows[0].with_food,
+        takeFor: updatedPrescription ?.rows[0].take_for,
 
     };
 

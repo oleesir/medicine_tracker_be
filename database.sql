@@ -30,7 +30,7 @@ CREATE TABLE prescriptions
 (
     id        uuid DEFAULT uuid_generate_v4(),
     user_id   uuid         NOT NULL,
-    name      VARCHAR(500) NOT NULL,
+    drug_name VARCHAR(500) NOT NULL,
     dose      INT          NOT NULL CHECK (dose >= 0),
     unit      unit DEFAULT 'mg',
     drug_form form DEFAULT 'tablet',
@@ -50,6 +50,10 @@ CREATE TYPE food AS ENUM('no', 'yes');
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS prescribed_drugs CASCADE;
 DROP TABLE IF EXISTS prescriptions CASCADE;
+
+
+ALTER TABLE prescriptions
+    RENAME name TO drug_name;
 
 
 SELECT *
