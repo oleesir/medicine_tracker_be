@@ -138,3 +138,28 @@ export const updatePrescription = async (req: Request, res: Response) => {
     return res.status(200).json({status: "success", data});
 
 }
+
+
+/**
+ * Delete prescription
+ * @method deletePrescription
+ * @memberof prescriptionController
+ * @param {object} req
+ * @param {object} res
+ * @returns {(function|object)} Function next() or JSON object
+ */
+export const deletePrescription = async (req: Request, res: Response) => {
+    const { id} = req.params;
+
+    const foundPrescription = await pool.query(PrescriptionQueries.getPrescription, [id]);
+
+    if (!foundPrescription.rows[0]) {
+        return res.status(404).json({status: "failed", message: "Prescriptions does not exist"});
+    }
+
+    await pool.query(PrescriptionQueries.deletePrescription, [foundPrescription.rows[0].id]);
+
+    return res.status(200).json({status: "success", message:"Prescription deleted successfully"});
+
+}
+
