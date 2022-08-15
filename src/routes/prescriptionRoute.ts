@@ -5,7 +5,8 @@ import {
     createPrescription,
     getAllUsersPrescriptions,
     getSinglePrescription,
-    updatePrescription
+    updatePrescription,
+    deletePrescription
 } from "../controller/prescription.controller";
 
 
@@ -15,6 +16,7 @@ router.post("/",verifyToken, asyncErrorHandler(createPrescription));
 router.put("/:id",verifyToken, asyncErrorHandler(updatePrescription));
 router.get("/",verifyToken, asyncErrorHandler(getAllUsersPrescriptions));
 router.get("/:id",verifyToken, asyncErrorHandler(getSinglePrescription));
+router.delete("/:id",verifyToken, asyncErrorHandler(deletePrescription ));
 
 
 
