@@ -11,44 +11,42 @@ CREATE TABLE users
     last_name     VARCHAR(255)       NOT NULL,
     email         VARCHAR(90) UNIQUE NOT NULL,
     password      VARCHAR(90)        NOT NULL,
-    refresh_token VARCHAR(255),
+    refresh_token VARCHAR,
     PRIMARY KEY (id)
 );
 
 
-CREATE TABLE prescribed_drugs
-(
-    id      uuid DEFAULT uuid_generate_v4(),
-    user_id uuid NOT NULL,
-    drugs   VARCHAR [],
-    FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE
-        PRIMARY KEY (id)
-);
-
 CREATE TABLE prescriptions
 (
-    id        uuid DEFAULT uuid_generate_v4(),
-    user_id   uuid         NOT NULL,
-    drug_name VARCHAR(500) NOT NULL,
-    dose      INT          NOT NULL CHECK (dose >= 0),
-    unit      unit DEFAULT 'mg',
-    drug_form form DEFAULT 'tablet',
-    with_food food DEFAULT 'no',
-    take_for  VARCHAR(255) NOT NULL,
+    id                    uuid   DEFAULT uuid_generate_v4(),
+    user_id               uuid    NOT NULL,
+    drug_name             VARCHAR NOT NULL,
+    dose                  INT     NOT NULL CHECK (dose >= 0),
+    unit                  unit   DEFAULT 'mg',
+    end_date DATE,
+    status                status DEFAULT 'active',
+     first_timer VARCHAR NOT NULL,
+     second_timer VARCHAR  NULL,
+     third_timer VARCHAR  NULL,
     FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
 
 );
 
+
+
 CREATE TYPE unit AS ENUM('mg', 'ml', 'microgram');
 CREATE TYPE form AS ENUM('liquid', 'capsule', 'tablet');
-CREATE TYPE food AS ENUM('no', 'yes');
+CREATE TYPE day_or_night AS ENUM('AM', 'PM');
+CREATE TYPE status AS ENUM('active', 'ended');
+CREATE TYPE number_of_intake_types AS ENUM('1','2','3','4');
+
+DROP TYPE number_of_intake_types;
+DROP TYPE status;
 
 
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS prescribed_drugs CASCADE;
 DROP TABLE IF EXISTS prescriptions CASCADE;
 
 
@@ -56,8 +54,17 @@ ALTER TABLE prescriptions
     RENAME name TO drug_name;
 
 
+ALTER TABLE prescriptions
+    ADD COLUMN frequency_unit frequency_unit DEFAULT 'second(s)';
+
+
 SELECT *
 FROM users;
 
 SELECT *
 FROM prescriptions;
+
+
+
+SELECT *
+FROM prescriptions WHERE prescription_end_date = $1;

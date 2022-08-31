@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import pool from "../../db";
 import PrescriptionQueries from "../queries/prescriptionQueries";
+import {convertTime} from "../utils/convertTime";
+
 
 /**
  * Create prescription for user
@@ -11,27 +13,27 @@ import PrescriptionQueries from "../queries/prescriptionQueries";
  * @returns {(function|object)} Function next() or JSON object
  */
 export const createPrescription = async (req: Request, res: Response) => {
-    const { id:userId } = (<any>req).user;
-    const {name, dose, unit, drugForm, withFood,takeFor} = req.body
+    const {id: userId} = (<any>req).user;
+    const {name, dose, unit, endDate, firstTimer, secondTimer, thirdTimer} = req.body
 
-    const newPrescription = await pool.query(PrescriptionQueries.createPrescription, [userId, name, dose,unit,drugForm,withFood,takeFor])
+    const newPrescription = await pool.query(PrescriptionQueries.createPrescription, [userId, name, dose, unit, endDate, convertTime(firstTimer), convertTime(secondTimer), convertTime(thirdTimer), "active"])
+
 
     const data = {
         id: newPrescription?.rows[0].id,
-        name: newPrescription?.rows[0].name,
+        name: newPrescription?.rows[0].drug_name,
         userId: newPrescription?.rows[0].user_id,
         dose: newPrescription?.rows[0].dose,
         unit: newPrescription?.rows[0].unit,
-        drugForm: newPrescription?.rows[0].drug_form,
-        withFood: newPrescription?.rows[0].with_food,
-        takeFor: newPrescription?.rows[0].take_for,
-
+        endDate,
+        firstTimer,
+        secondTimer,
+        thirdTimer,
+        status: newPrescription?.rows[0].status
     };
 
     return res.status(201).json({status: "success", data});
-
 }
-
 
 
 /**
@@ -43,7 +45,7 @@ export const createPrescription = async (req: Request, res: Response) => {
  * @returns {(function|object)} Function next() or JSON object
  */
 export const getAllUsersPrescriptions = async (req: Request, res: Response) => {
-    const { id:userId } = (<any>req).user;
+    const {id: userId} = (<any>req).user;
 
     const foundPrescription = await pool.query(PrescriptionQueries.getPrescriptions, [userId]);
 
@@ -71,26 +73,28 @@ export const getSinglePrescription = async (req: Request, res: Response) => {
 
     const foundPrescription = await pool.query(PrescriptionQueries.getPrescription, [id]);
 
+
     if (!foundPrescription.rows[0]) {
         return res.status(404).json({status: "failed", message: "Prescription does not exist"});
     }
 
     const data = {
         id: foundPrescription?.rows[0].id,
-        name: foundPrescription?.rows[0].name,
+        name: foundPrescription?.rows[0].drug_name,
         userId: foundPrescription?.rows[0].user_id,
         dose: foundPrescription?.rows[0].dose,
         unit: foundPrescription?.rows[0].unit,
-        drugForm: foundPrescription?.rows[0].drug_form,
-        withFood: foundPrescription?.rows[0].with_food,
-        takeFor: foundPrescription?.rows[0].take_for,
+        endDate: foundPrescription?.rows[0].end_date,
+        firstTimer: foundPrescription?.rows[0].first_timer,
+        secondTimer: foundPrescription?.rows[0].second_timer,
+        thirdTimer: foundPrescription?.rows[0].third_timer,
+        status: foundPrescription?.rows[0].status
 
     };
 
     return res.status(200).json({status: "success", data});
 
 }
-
 
 
 /**
@@ -103,7 +107,8 @@ export const getSinglePrescription = async (req: Request, res: Response) => {
  */
 export const updatePrescription = async (req: Request, res: Response) => {
     const {id} = req.params
-    const {drugName, dose, unit, drugForm, withFood,takeFor} = req.body
+
+    const {name, dose, unit, endDate, firstTimer, secondTimer, thirdTimer, status} = req.body
 
 
     const foundPrescription = await pool.query(PrescriptionQueries.getPrescription, [id]);
@@ -114,12 +119,15 @@ export const updatePrescription = async (req: Request, res: Response) => {
 
     const updatedPrescription = await pool.query(PrescriptionQueries.updatePrescription,
         [
-            (drugName || foundPrescription?.rows[0].drug_name),
+            (
+                name || foundPrescription?.rows[0].drug_name),
             dose || foundPrescription?.rows[0].dose,
             unit || foundPrescription?.rows[0].unit,
-             drugForm || foundPrescription?.rows[0].drug_form,
-            withFood || foundPrescription?.rows[0].with_food,
-            takeFor || foundPrescription?.rows[0].take_for,
+            endDate || foundPrescription?.rows[0].end_date,
+            firstTimer || foundPrescription?.rows[0].first_timer,
+            secondTimer || foundPrescription?.rows[0].second_timer,
+            thirdTimer || foundPrescription?.rows[0].third_timer,
+            status || foundPrescription?.rows[0].status,
             id])
 
 
@@ -127,11 +135,13 @@ export const updatePrescription = async (req: Request, res: Response) => {
         id: foundPrescription?.rows[0].id,
         drugName: updatedPrescription?.rows[0].drug_name,
         userId: foundPrescription?.rows[0].user_id,
-        dose: updatedPrescription ?.rows[0].dose,
-        unit:updatedPrescription ?.rows[0].unit,
-        drugForm: updatedPrescription ?.rows[0].drug_form,
-        withFood: updatedPrescription ?.rows[0].with_food,
-        takeFor: updatedPrescription ?.rows[0].take_for,
+        dose: updatedPrescription?.rows[0].dose,
+        unit: updatedPrescription?.rows[0].unit,
+        endDate: updatedPrescription?.rows[0].end_date,
+        firstTimer: updatedPrescription?.rows[0].first_timer,
+        secondTimer: updatedPrescription?.rows[0].second_timer,
+        thirdTimer: updatedPrescription?.rows[0].third_timer,
+        status: updatedPrescription?.rows[0].status,
 
     };
 
@@ -149,7 +159,7 @@ export const updatePrescription = async (req: Request, res: Response) => {
  * @returns {(function|object)} Function next() or JSON object
  */
 export const deletePrescription = async (req: Request, res: Response) => {
-    const { id} = req.params;
+    const {id} = req.params;
 
     const foundPrescription = await pool.query(PrescriptionQueries.getPrescription, [id]);
 
@@ -159,7 +169,7 @@ export const deletePrescription = async (req: Request, res: Response) => {
 
     await pool.query(PrescriptionQueries.deletePrescription, [foundPrescription.rows[0].id]);
 
-    return res.status(200).json({status: "success", message:"Prescription deleted successfully"});
+    return res.status(200).json({status: "success", message: "Prescription deleted successfully"});
 
 }
 
