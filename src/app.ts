@@ -4,6 +4,8 @@ import routes from "./routes";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import handleError from "./middleware/errorHandler.middleware";
+import cron from "node-cron";
+import notificationsJob from "./jobs/notificationsJob";
 
 const app: Application = express();
 const port = process.env.PORT || 5000;
@@ -21,7 +23,6 @@ app.use(cookieParser());
 app.use("/api/v1", routes);
 
 
-
 app.get("/", async (req: Request, res: Response): Promise<Response> => {
     return res.status(200).send({
         message: "MEDICINE TRACKER BACKEND",
@@ -29,5 +30,9 @@ app.get("/", async (req: Request, res: Response): Promise<Response> => {
 });
 
 app.use(handleError);
+
+// cron scheduler
+cron.schedule(`* * * * *`, notificationsJob);
+
 
 app.listen(port, () => console.log(`listening at http://localhost:${port}`));
