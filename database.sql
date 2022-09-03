@@ -31,15 +31,14 @@ CREATE TABLE prescriptions
     FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE CASCADE,
     PRIMARY KEY (id)
-
 );
 
 
 
 CREATE TYPE unit AS ENUM('mg', 'ml', 'microgram');
+CREATE TYPE status AS ENUM('active', 'ended');
 CREATE TYPE form AS ENUM('liquid', 'capsule', 'tablet');
 CREATE TYPE day_or_night AS ENUM('AM', 'PM');
-CREATE TYPE status AS ENUM('active', 'ended');
 CREATE TYPE number_of_intake_types AS ENUM('1','2','3','4');
 
 DROP TYPE number_of_intake_types;
