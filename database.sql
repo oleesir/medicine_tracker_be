@@ -21,7 +21,7 @@ CREATE TABLE prescriptions
     id                    uuid   DEFAULT uuid_generate_v4(),
     user_id               uuid    NOT NULL,
     drug_name             VARCHAR NOT NULL,
-    dose                  INT     NOT NULL CHECK (dose >= 0),
+    dose                  NUMERIC     NOT NULL CHECK (dose >= 0),
     unit                  unit   DEFAULT 'mg',
     end_date DATE,
     status                status DEFAULT 'active',
@@ -67,3 +67,6 @@ FROM prescriptions;
 
 SELECT *
 FROM prescriptions WHERE prescription_end_date = $1;
+
+ALTER TABLE prescriptions
+ALTER COLUMN dose TYPE NUMERIC;

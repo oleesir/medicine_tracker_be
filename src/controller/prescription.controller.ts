@@ -124,9 +124,9 @@ export const updatePrescription = async (req: Request, res: Response) => {
             dose || foundPrescription?.rows[0].dose,
             unit || foundPrescription?.rows[0].unit,
             endDate || foundPrescription?.rows[0].end_date,
-            firstTimer || foundPrescription?.rows[0].first_timer,
-            secondTimer || foundPrescription?.rows[0].second_timer,
-            thirdTimer || foundPrescription?.rows[0].third_timer,
+            convertTime(firstTimer) || foundPrescription?.rows[0].first_timer,
+            convertTime(secondTimer) || foundPrescription?.rows[0].second_timer,
+            convertTime(thirdTimer) || foundPrescription?.rows[0].third_timer,
             status || foundPrescription?.rows[0].status,
             id])
 
