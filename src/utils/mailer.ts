@@ -11,8 +11,6 @@ const auth = {
         api_key:process.env.MAILGUN_API_KEY as string,
         domain:process.env.MAILGUN_DOMAIN as string
 
-        // api_key:'key-f9bf266a5cbbd031ff8c9e61d400e239',
-        // domain:'sandbox08e7297d7ce5435da31d1a71ac92eb5d.mailgun.org'
     }
 }
 
