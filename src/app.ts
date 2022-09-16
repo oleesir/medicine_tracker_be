@@ -7,6 +7,7 @@ import handleError from "./middleware/errorHandler.middleware";
 import cron from "node-cron";
 import notificationsJob from "./jobs/notificationsJob";
 
+
 const app: Application = express();
 const port = process.env.PORT || 5000;
 
@@ -18,6 +19,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use(cookieParser());
+
 
 //API
 app.use("/api/v1", routes);
