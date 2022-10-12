@@ -8,12 +8,15 @@ import {
     updatePrescription,
     deletePrescription
 } from "../controller/prescription.controller";
+import {validate} from "../middleware/validation.middleware";
+import {schemas} from "../utils/schemas";
+
 
 
 const router:Router = Router()
 
-router.post("/",verifyToken, asyncErrorHandler(createPrescription));
-router.put("/:id",verifyToken, asyncErrorHandler(updatePrescription));
+router.post("/",verifyToken,validate(schemas.prescriptionSchema), asyncErrorHandler(createPrescription));
+router.put("/:id",verifyToken,validate(schemas.prescriptionSchema), asyncErrorHandler(updatePrescription));
 router.get("/",verifyToken, asyncErrorHandler(getAllUsersPrescriptions));
 router.get("/:id",verifyToken, asyncErrorHandler(getSinglePrescription));
 router.delete("/:id",verifyToken, asyncErrorHandler(deletePrescription ));

@@ -4,6 +4,7 @@ export const convertTime = (newTime: string) => {
          return null;
     }
     const [time, modifier] = newTime.split(" ");
+
     let [hours, minutes] = time.split(":");
 
     if (hours === "12") {
