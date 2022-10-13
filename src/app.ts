@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime";
 import express,{Application,Request,Response} from 'express';
 import routes from "./routes";
 import cookieParser from "cookie-parser";
