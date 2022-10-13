@@ -7,6 +7,8 @@ const { Pool } = pg;
 
 const { USER, HOST, DB_NAME, DB_URI, PASSWORD, DB_PORT } = process.env
 
+console.log('DB_URI', DB_URI)
+
 const config = DB_URI ?
     {
         connectionString: DB_URI,
