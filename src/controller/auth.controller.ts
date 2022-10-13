@@ -1,5 +1,5 @@
 import {CookieOptions, Request, Response} from "express";
-import pool from "../../db";
+import pool from "../db";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import AuthQueries from "../queries/authQueries";
@@ -11,7 +11,6 @@ dotenv.config();
 const refreshTokenCookieOptions: CookieOptions = {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    // sameSite: "lax",
     sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
     secure: process.env.NODE_ENV !== "development",
     domain: process.env.NODE_ENV === "development" ? "localhost" : "",

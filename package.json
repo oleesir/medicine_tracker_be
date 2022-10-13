@@ -5,9 +5,12 @@
   "repository": "https://github.com/oleesir/medicine_tracker_be.git",
   "author": "oleesir <oleesir@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "18.x"
+  },
+  "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development ts-node-dev ./src/app.ts --exec babel-node",
-    "pm": "pm2-dev start ./src/app.ts",
     "clean": "rm -rf dist",
     "build": "npm run clean && cross-env NODE_ENV=production babel --extensions .ts ./src -d ./dist",
     "start": "cross-env  NODE_ENV=production node ./dist/app.js"
