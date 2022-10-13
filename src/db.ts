@@ -3,11 +3,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { Pool } = pg;
+const {Pool} = pg;
 
-const { USER, HOST, DB_NAME, DB_URI, PASSWORD, DB_PORT } = process.env
-
-console.log('DB_URI', DB_URI)
+const {USER, HOST, DB_NAME, DB_URI, PASSWORD, DB_PORT} = process.env;
 
 const config = DB_URI ?
     {
@@ -22,9 +20,9 @@ const config = DB_URI ?
     }
 
 const pool = new Pool({
-        ...config,
-        idleTimeoutMillis: 0,
-        connectionTimeoutMillis: 0
+    ...config,
+    idleTimeoutMillis: 0,
+    connectionTimeoutMillis: 0
 });
 
 

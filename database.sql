@@ -16,12 +16,18 @@ CREATE TABLE users
 );
 
 
+
+CREATE TYPE unit AS ENUM('mg', 'ml', 'microgram');
+CREATE TYPE status AS ENUM('active', 'ended');
+CREATE TYPE form AS ENUM('liquid', 'capsule', 'tablet');
+
+
 CREATE TABLE prescriptions
 (
     id                    uuid   DEFAULT uuid_generate_v4(),
     user_id               uuid    NOT NULL,
     drug_name             VARCHAR NOT NULL,
-    dose                  NUMERIC     NOT NULL CHECK (dose >= 0),
+    dose                     INT  NOT NULL,
     unit                  unit   DEFAULT 'mg',
     end_date DATE,
     status                status DEFAULT 'active',
