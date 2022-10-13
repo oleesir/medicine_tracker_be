@@ -1,4 +1,6 @@
+// import "regenerator-runtime/runtime";
 import express,{Application,Request,Response} from 'express';
+import {config} from 'dotenv';
 import routes from "./routes";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -6,6 +8,7 @@ import handleError from "./middleware/errorHandler.middleware";
 import cron from "node-cron";
 import notificationsJob from "./jobs/notificationsJob";
 
+config();
 
 const app: Application = express();
 const port = process.env.PORT || 5000;

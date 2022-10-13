@@ -1,19 +1,18 @@
 {
   "name": "olisa",
   "version": "1.0.0",
-  "main": "./dist/app.js",
+  "main": "./src/app.ts",
   "repository": "https://github.com/oleesir/medicine_tracker_be.git",
   "author": "oleesir <oleesir@gmail.com>",
   "license": "MIT",
   "engines": {
     "node": "v18.10.0"
   },
-  "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development ts-node-dev ./src/app.ts --exec babel-node",
+    "dev": "NODE_ENV=development ts-node-dev ./src/app.ts --exec babel-node",
     "clean": "rm -rf dist",
-    "build": "npm run clean && cross-env NODE_ENV=production babel --extensions .ts ./src -d ./dist",
-    "start": "cross-env NODE_ENV=production node ./dist/app.js"
+    "build": "npm run clean && NODE_ENV=production babel --extensions .ts ./src -d ./dist",
+    "start": "NODE_ENV=production node ./dist/app.js"
   },
   "dependencies": {
     "@babel/cli": "^7.18.10",
