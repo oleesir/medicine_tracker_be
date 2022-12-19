@@ -6,12 +6,16 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import handleError from "./middleware/errorHandler.middleware";
 import cron from "node-cron";
+import cors from "cors";
 import notificationsJob from "./jobs/notificationsJob";
 
 config();
 
 const app: Application = express();
 const port = process.env.PORT || 5000;
+
+app.use(cors({credentials: true}));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,3 +44,5 @@ cron.schedule(`* * * * *`, notificationsJob);
 
 
 app.listen(port, () => console.log(`listening at http://localhost:${port}`));
+
+

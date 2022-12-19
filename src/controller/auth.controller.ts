@@ -90,6 +90,7 @@ export const loginUser = async (req: Request, res: Response) => {
         firstName: foundUser.rows[0]?.first_name,
         lastName: foundUser.rows[0]?.last_name,
         email: foundUser.rows[0]?.email.toLowerCase(),
+        refreshToken:foundUser.rows[0].refresh_token
     };
 
     await pool.query(AuthQueries.updateRefreshToken, [foundUser.rows[0]?.refresh_token, foundUser.rows[0]?.id])
