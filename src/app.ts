@@ -8,7 +8,7 @@ import handleError from "./middleware/errorHandler.middleware";
 import cron from "node-cron";
 import cors from "cors";
 import notificationsJob from "./jobs/notificationsJob";
-
+import db from "./db";
 config();
 
 const app: Application = express();
@@ -43,6 +43,8 @@ app.use(handleError);
 cron.schedule(`* * * * *`, notificationsJob);
 
 
-app.listen(port, () => console.log(`listening at http://localhost:${port}`));
+app.listen(port, () =>{
+    console.log(`listening at http://localhost:${port}`)
+} );
 
 

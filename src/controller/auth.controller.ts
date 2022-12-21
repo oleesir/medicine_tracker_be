@@ -28,6 +28,7 @@ const refreshTokenCookieOptions: CookieOptions = {
 export const signupUser = async (req: Request, res: Response) => {
     const {firstName, lastName, email, password} = req.body
 
+
     const foundEmail = await pool.query(AuthQueries.checkEmailExists, [email])
 
 

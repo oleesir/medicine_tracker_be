@@ -4,7 +4,7 @@ DATABASE medicine_tracker;
 CREATE
 EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id            uuid DEFAULT uuid_generate_v4(),
     first_name    VARCHAR(255)       NOT NULL,
@@ -22,7 +22,7 @@ CREATE TYPE status AS ENUM('active', 'ended');
 CREATE TYPE form AS ENUM('liquid', 'capsule', 'tablet');
 
 
-CREATE TABLE prescriptions
+CREATE TABLE IF NOT EXISTS  prescriptions
 (
     id                    uuid   DEFAULT uuid_generate_v4(),
     user_id               uuid    NOT NULL,
