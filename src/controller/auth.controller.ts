@@ -1,6 +1,6 @@
 import {CookieOptions, Request, Response} from "express";
-import pool from "../db";
-import bcrypt from "bcryptjs";
+import pool from "../dbs";
+// import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import AuthQueries from "../queries/authQueries";
 import {generateToken, generateRefreshToken} from "../utils/generateTokens";
@@ -36,9 +36,9 @@ export const signupUser = async (req: Request, res: Response) => {
         return res.status(409).json({status: "failed", message: "Email already exist"});
     }
 
-    const hashedPassword = bcrypt.hashSync(password, 10);
+    // const hashedPassword = bcrypt.hashSync(password, 10);
 
-    const newUser = await pool.query(AuthQueries.registerUser, [firstName, lastName, email.toLowerCase(), hashedPassword])
+    const newUser = await pool.query(AuthQueries.registerUser, [firstName, lastName, email.toLowerCase(), password])
 
     const data = {
         id: newUser?.rows[0].id,

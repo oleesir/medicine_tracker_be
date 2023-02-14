@@ -1,6 +1,6 @@
 // import "regenerator-runtime/runtime";
-import express,{Application,Request,Response} from 'express';
-import {config} from 'dotenv';
+import express,{ Application,Request,Response } from 'express';
+import { config } from 'dotenv';
 import routes from "./routes";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -8,7 +8,6 @@ import handleError from "./middleware/errorHandler.middleware";
 import cron from "node-cron";
 import cors from "cors";
 import notificationsJob from "./jobs/notificationsJob";
-import db from "./db";
 config();
 
 const app: Application = express();
