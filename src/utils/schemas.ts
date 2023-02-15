@@ -43,7 +43,7 @@ export const schemas = {
                 "any.required": `"name" is a required.`,
             }),
         dose: Joi.number().min(1).required(),
-        unit: Joi.string().valid('mg', 'ml', 'microgram'),
+        unit: Joi.string().valid('mg', 'ml', 'micrograms'),
         endDate: Joi.date().greater('now').format('YYYY-MM-DD'),
         status: Joi.string().valid('inactive', 'active'),
         firstTimer: Joi.string()
