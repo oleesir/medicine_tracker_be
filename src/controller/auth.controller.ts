@@ -1,9 +1,8 @@
-import {CookieOptions, Request, Response} from "express";
-import pool from "../dbs";
-// import bcrypt from "bcryptjs";
+import { CookieOptions, Request, Response } from "express";
 import dotenv from "dotenv";
-import AuthQueries from "../queries/authQueries";
-import {generateToken, generateRefreshToken} from "../utils/generateTokens";
+import  models from "../database/models/index"
+import { Op } from "sequelize";
+import { generateToken } from "../utils/generateTokens";
 import comparePassword from "../utils/comparePassword";
 
 dotenv.config();
@@ -26,29 +25,24 @@ const refreshTokenCookieOptions: CookieOptions = {
  * @returns {(function|object)} Function next() or JSON object
  */
 export const signupUser = async (req: Request, res: Response) => {
-    const {firstName, lastName, email, password} = req.body
+    const {firstName, lastName, email, password} = req.body;
 
-
-    const foundEmail = await pool.query(AuthQueries.checkEmailExists, [email])
-
-
-    if (foundEmail.rows[0]) {
-        return res.status(409).json({status: "failed", message: "Email already exist"});
+  const [user, created] = await models.User.findOrCreate({
+    where:{email: {[Op.iLike]: email}},
+    defaults: {
+        first_name: firstName,
+        last_name: lastName,
+        email: email.toLowerCase(),
+        password
     }
+ })
+    if (!created) return res.status(409).send({ error: 'Email already in use' });
 
-    // const hashedPassword = bcrypt.hashSync(password, 10);
+    const accessToken = generateToken(user.get(), process.env.ACCESS_TOKEN_SECRET as string);
 
-    const newUser = await pool.query(AuthQueries.registerUser, [firstName, lastName, email.toLowerCase(), password])
+    res.cookie("accessToken", accessToken, refreshTokenCookieOptions);
 
-    const data = {
-        id: newUser?.rows[0].id,
-        firstName: newUser?.rows[0].first_name,
-        lastName: newUser?.rows[0].last_name,
-        email: newUser?.rows[0].email,
-    };
-
-    return res.status(201).json({status: "success", data});
-
+    return res.status(201).json({ status: "success", user,accessToken });
 }
 
 
@@ -62,42 +56,23 @@ export const signupUser = async (req: Request, res: Response) => {
  */
 export const loginUser = async (req: Request, res: Response) => {
 
-    const {email, password} = req.body
+    const {email, password} = req.body;
 
-    const foundUser = await pool.query(AuthQueries.checkEmailExists, [email])
+    const foundUser = await models.User.findOne({ where: { email } });
 
-    if (foundUser.rows.length === 0) {
-        return res.status(404).json({status: "failed", message: "Email or password is incorrect"});
+    if (!foundUser) {
+        return res.status(404).json({ status: "failed", message: "Email or password is incorrect" });
     }
 
-    const verifyUserPassword = comparePassword(password, foundUser?.rows[0].password);
+    const verifyUserPassword = comparePassword(password, foundUser?.password);
 
     if (!verifyUserPassword) {
-        return res.status(401).json({status: "failed", message: "email or password is incorrect"});
+        return res.status(401).json({status: "failed", message: "Email or password is incorrect"});
     }
 
-    const payload = {
-        id: foundUser.rows[0]?.id,
-        email: foundUser.rows[0]?.email.toLowerCase(),
-    };
-    const accessToken = generateToken(payload, process.env.ACCESS_TOKEN_SECRET as string);
-    const refreshToken = generateRefreshToken(payload, process.env.REFRESH_TOKEN_SECRET as string);
-
-    foundUser.rows[0].refresh_token = refreshToken
-
-
-    const data = {
-        id: foundUser.rows[0]?.id,
-        firstName: foundUser.rows[0]?.first_name,
-        lastName: foundUser.rows[0]?.last_name,
-        email: foundUser.rows[0]?.email.toLowerCase(),
-        refreshToken:foundUser.rows[0].refresh_token
-    };
-
-    await pool.query(AuthQueries.updateRefreshToken, [foundUser.rows[0]?.refresh_token, foundUser.rows[0]?.id])
+    const accessToken = generateToken(foundUser.get(), process.env.ACCESS_TOKEN_SECRET as string);
 
     res.cookie("accessToken", accessToken, refreshTokenCookieOptions);
-    res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
-    return res.status(200).json({status: "success", data});
 
+    return res.status(200).json({ status: "success", foundUser,accessToken });
 }

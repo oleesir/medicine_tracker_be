@@ -7,7 +7,7 @@ import morgan from "morgan";
 import handleError from "./middleware/errorHandler.middleware";
 import cron from "node-cron";
 import cors from "cors";
-import notificationsJob from "./jobs/notificationsJob";
+// import notificationsJob from "./jobs/notificationsJob";
 config();
 
 const app: Application = express();
@@ -39,7 +39,7 @@ app.get("/", async (req: Request, res: Response): Promise<Response> => {
 app.use(handleError);
 
 // cron scheduler
-cron.schedule(`* * * * *`, notificationsJob);
+// cron.schedule(`* * * * *`, notificationsJob);
 
 
 app.listen(port, () =>{

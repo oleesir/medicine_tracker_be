@@ -1,19 +1,46 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Prescription extends Model {
+
+import { Model, UUIDV4 } from 'sequelize';
+
+
+interface PrescriptionAttributes {
+  prescription_id: string;
+  user_id: string;
+  drug_name: string;
+  dose: number;
+  end_date: string;
+  status: string[];
+  unit: string[];
+  first_timer: string;
+  second_timer: string;
+  third_timer: string;
+}
+
+
+module.exports = (sequelize:any, DataTypes:any) => {
+  class Prescription extends Model <PrescriptionAttributes>{
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+
+    declare prescription_id: string;
+    declare  user_id: string;
+    declare  drug_name: string;
+    declare  dose: number;
+    declare  end_date: string;
+    declare  status: string[];
+    declare  unit: string[];
+    declare  first_timer: string;
+    declare  second_timer: string;
+    declare  third_timer: string;
+
+    static associate(models:any) {
       // define association here
       Prescription.belongsTo(models.User, {
         foreignKey: 'user_id',
-        as: 'user_id',
+        as: 'user',
         onDelete: 'CASCADE',
       })
     }
@@ -23,16 +50,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true,
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: UUIDV4,
     },
     user_id: {
       type: DataTypes.UUID,
       onDelete: 'CASCADE',
       allowNull: false,
       references: {
-        model: 'User',
         key: 'user_id',
-        as: 'user_id'
+        model: 'User',
       }
     },
     drug_name: {

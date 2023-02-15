@@ -25,7 +25,7 @@ npm manifest:
   {
     "name": "olisa",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "index.ts",
     "repository": "https://github.com/oleesir/medicine_tracker_be.git",
     "author": "oleesir <oleesir@gmail.com>",
     "license": "MIT",
