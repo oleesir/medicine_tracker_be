@@ -19,17 +19,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
     //  */
-    declare user_id: string;
-    declare first_name: string;
-    declare last_name: string;
-    declare password: string;
-    declare email: string;
 
     static associate(models:any) {
       // define association here
       User.hasMany(models.Prescription, {
         foreignKey: 'user_id',
-        as: 'Prescription',
+        as: 'prescription',
         onDelete: 'CASCADE',
       });
 

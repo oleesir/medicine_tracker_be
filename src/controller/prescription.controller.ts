@@ -1,10 +1,9 @@
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 import models from "../database/models";
-import {Op, where} from "sequelize";
-// import pool from "../dbs";
-// import PrescriptionQueries from "../queries/prescriptionQueries";
-import { convertTime } from "../utils/convertTime";
-//
+import {convertTime} from "../utils/convertTime";
+import {Op} from "sequelize";
+import dayjs from "dayjs";
+
 
 /**
  * Create prescription for user
@@ -15,23 +14,25 @@ import { convertTime } from "../utils/convertTime";
  * @returns {(function|object)} Function next() or JSON object
  */
 export const createPrescription = async (req: Request, res: Response) => {
-    const {user_id: userId } = (<any>req).user;
-    const {name, dose, unit, endDate, firstTimer, secondTimer, thirdTimer} = req.body
+    const { user_id: userId } = (<any>req).user;
+    const { name, dose, unit, endDate, numOfIntake, firstTimer, secondTimer, thirdTimer, fourthTimer } = req.body
 
     const newPrescription = await models.Prescription.create({
             user_id:userId,
             drug_name: name,
             dose,
             unit,
-            end_date: endDate,
+            num_of_intake: numOfIntake,
+            end_date: dayjs(endDate).toISOString(),
             first_timer: convertTime(firstTimer),
             second_timer:convertTime(secondTimer),
             third_timer: convertTime(thirdTimer),
+            fourth_timer: convertTime(fourthTimer),
             status:'active'
         }
     )
 
-    return res.status(201).json({status: "success", newPrescription});
+    return res.status(201).json({ status: "success", newPrescription });
 }
 
 
@@ -46,6 +47,8 @@ export const createPrescription = async (req: Request, res: Response) => {
 export const getAllUsersPrescriptions = async (req: Request, res: Response) => {
     const { user_id: userId }  = (<any>req).user;
 
+    const foundUser = await models.User.findByPk(userId);
+
     const { count , rows } = await models.Prescription.findAndCountAll({
         where:{ user_id: userId },
         raw: true,
@@ -54,10 +57,10 @@ export const getAllUsersPrescriptions = async (req: Request, res: Response) => {
     });
 
     if (rows.length === 0) {
-        return res.status(404).json({status: "failed", message: "Prescriptions does not exist"});
+        return res.status(404).json({ status: "failed", message: "Prescriptions does not exist" });
     }
 
-    return res.status(200).json({status: "success", data: rows, count});
+    return res.status(200).json({ status: "success", data: rows, count });
 }
 
 
@@ -75,7 +78,7 @@ export const getSinglePrescription = async (req: Request, res: Response) => {
     const foundPrescription = await models.Prescription.findByPk(prescriptionId);
 
     if (!foundPrescription) {
-        return res.status(404).json({status: "failed", message: "Prescription does not exist"});
+        return res.status(404).json({ status: "failed", message: "Prescription does not exist" });
     }
 
     return res.status(200).json({ status: "success", data:foundPrescription });
@@ -94,7 +97,7 @@ export const getSinglePrescription = async (req: Request, res: Response) => {
 export const updatePrescription = async (req: Request, res: Response) => {
     const { prescriptionId } = req.params;
 
-        const { name, dose, unit, endDate, firstTimer, secondTimer, thirdTimer } = req.body;
+        const { name, dose, unit, endDate, firstTimer, numOfIntake, secondTimer, thirdTimer,fourthTimer } = req.body;
 
         const foundPrescription = await models.Prescription.findByPk(prescriptionId);
 
@@ -106,10 +109,12 @@ export const updatePrescription = async (req: Request, res: Response) => {
         foundPrescription.drug_name = name || foundPrescription?.drug_name;
         foundPrescription.dose = dose || foundPrescription?.dose;
         foundPrescription.unit = unit || foundPrescription?.unit;
+        foundPrescription.num_of_intake = numOfIntake || foundPrescription?.num_of_intake,
         foundPrescription.end_date = endDate || foundPrescription?.end_date;
         foundPrescription.first_timer = convertTime(firstTimer) || foundPrescription?.first_timer;
         foundPrescription.second_timer = convertTime(secondTimer) || foundPrescription?.second_timer;
         foundPrescription.third_timer = convertTime(thirdTimer) || foundPrescription?.third_timer;
+        foundPrescription.fourth_timer = convertTime(fourthTimer) || foundPrescription?.fourth_timer;
 
         await foundPrescription.save();
 

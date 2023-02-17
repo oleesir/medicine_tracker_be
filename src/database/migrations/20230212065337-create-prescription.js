@@ -21,7 +21,7 @@ module.exports = {
         references: {
           model: 'User',
           key: 'user_id',
-          as: 'user_id'
+          as: 'user'
         }
       },
       drug_name: {
@@ -36,14 +36,19 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      status: {
-        type: Sequelize.ENUM("active", "ended"),
-        defaultValue: "active",
-        allowNull: false,
-      },
       unit: {
         type: Sequelize.ENUM("mg", "ml", "micrograms"),
         defaultValue: "mg",
+        allowNull: false,
+      },
+      num_of_intake: {
+        type: Sequelize.ENUM("1", "2", "3", "4"),
+        defaultValue: "1",
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.ENUM("active", "ended"),
+        defaultValue: "active",
         allowNull: false,
       },
       first_timer: {
@@ -54,6 +59,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       third_timer: {
+        type: Sequelize.STRING
+      },
+      fourth_timer: {
         type: Sequelize.STRING
       },
       created_at: {

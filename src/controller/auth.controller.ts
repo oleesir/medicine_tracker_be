@@ -20,12 +20,12 @@ const refreshTokenCookieOptions: CookieOptions = {
  * Signup a new user
  * @method signupUser
  * @memberof authController
- * @param {object} req
- * @param {object} res
- * @returns {(function|object)} Function next() or JSON object
+ * @param { object } req
+ * @param { object } res
+ * @returns { (function|object) } Function next() or JSON object
  */
 export const signupUser = async (req: Request, res: Response) => {
-    const {firstName, lastName, email, password} = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
   const [user, created] = await models.User.findOrCreate({
     where:{email: {[Op.iLike]: email}},
@@ -38,11 +38,16 @@ export const signupUser = async (req: Request, res: Response) => {
  })
     if (!created) return res.status(409).send({ error: 'Email already in use' });
 
-    const accessToken = generateToken(user.get(), process.env.ACCESS_TOKEN_SECRET as string);
+    const payload = {
+        user_id: user?.user_id,
+        email:  user?.email,
+    };
+
+    const accessToken = generateToken(payload, process.env.ACCESS_TOKEN_SECRET as string);
 
     res.cookie("accessToken", accessToken, refreshTokenCookieOptions);
 
-    return res.status(201).json({ status: "success", user,accessToken });
+    return res.status(201).json({ status: "success", data: user });
 }
 
 
@@ -70,9 +75,14 @@ export const loginUser = async (req: Request, res: Response) => {
         return res.status(401).json({status: "failed", message: "Email or password is incorrect"});
     }
 
-    const accessToken = generateToken(foundUser.get(), process.env.ACCESS_TOKEN_SECRET as string);
+    const payload = {
+        user_id: foundUser?.user_id,
+        email: foundUser?.email,
+    };
+
+    const accessToken = generateToken(payload, process.env.ACCESS_TOKEN_SECRET as string);
 
     res.cookie("accessToken", accessToken, refreshTokenCookieOptions);
 
-    return res.status(200).json({ status: "success", foundUser,accessToken });
+    return res.status(200).json({ status: "success", data: foundUser });
 }

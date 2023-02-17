@@ -44,6 +44,7 @@ export const schemas = {
             }),
         dose: Joi.number().min(1).required(),
         unit: Joi.string().valid('mg', 'ml', 'micrograms'),
+        numOfIntake: Joi.string().valid('1', '2', '3', '4'),
         endDate: Joi.date().greater('now').format('YYYY-MM-DD'),
         status: Joi.string().valid('inactive', 'active'),
         firstTimer: Joi.string()
@@ -64,6 +65,12 @@ export const schemas = {
             .messages({
                 "string.pattern.base": `"thirdTimer" should be a valid format HH:MM AM/PM`,
             }),
+        fourthTimer: Joi.string()
+            .regex(timeFormat)
+            .messages({
+                "string.pattern.base": `"fourthTimer" should be a valid format HH:MM AM/PM`,
+            }),
+
     })
 
 }
