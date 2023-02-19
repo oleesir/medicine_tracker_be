@@ -14,12 +14,16 @@ const notificationsJob = async () => {
     const currentTime = hours + ":" + minutes;
 
     const isoDate = dayjs(currentDate).toISOString();
-    await models.Prescription.update({ status:'ended' },
-        {
-            where: {[Op.and]:[{status: 'active'},
-                    {end_date: { [Op.lt]: isoDate }}]
-            }
-        });
+
+
+        await models.Prescription.update({ status:'ended' },
+            {
+                where: {[Op.and]:[{status: 'active'},
+                        {end_date: { [Op.lt]: isoDate }}]
+                }
+            });
+
+
 
     const reminders = await models.Prescription.findAll({
         include: [{
@@ -38,13 +42,13 @@ const notificationsJob = async () => {
     reminders.map((remind: any) => {
         Mailer.send({
             to: `${remind?.user?.email}`,
-            subject: `💊Medication Reminder💊.`,
+            subject: `💊 Medication Reminder 💊.`,
             text: `Hey ${remind?.user?.first_name} it's time to take your ${remind?.drug_name} medication. Health is wealth 🙂`
         });
 
         SendMessage.sendText({
             to: `${remind?.user?.calling_code}${remind?.user?.phone_number}`.trim(),
-                body: `💊Medication Reminder 💊. Hey ${remind?.user?.first_name} it's time to take your ${remind?.drug_name} medication. Health is wealth 🙂`
+                body: `💊 Medication Reminder 💊. Hey ${remind?.user?.first_name} it's time to take your ${remind?.drug_name} medication. Health is wealth 🙂`
             })
     })
 
