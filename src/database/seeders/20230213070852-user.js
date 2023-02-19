@@ -26,6 +26,8 @@ module.exports = {
       last_name: 'Doe',
       email: 'john@example.com',
       password: await hashPassword('qwertyuiop'),
+      calling_code: '+1',
+      phone_number: '1234567890',
       created_at: new Date(),
       updated_at: new Date()
     },
@@ -35,6 +37,8 @@ module.exports = {
         last_name: 'Doe',
         email: 'jessica@example.com',
         password: await hashPassword('qwertyuiop'),
+        calling_code: '+1',
+        phone_number: '1234567890',
         created_at: new Date(),
         updated_at: new Date()
       }]);

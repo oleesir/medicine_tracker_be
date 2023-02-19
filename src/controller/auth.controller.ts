@@ -25,7 +25,7 @@ const refreshTokenCookieOptions: CookieOptions = {
  * @returns { (function|object) } Function next() or JSON object
  */
 export const signupUser = async (req: Request, res: Response) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, callingCode, phoneNumber } = req.body;
 
   const [user, created] = await models.User.findOrCreate({
     where:{email: {[Op.iLike]: email}},
@@ -33,7 +33,9 @@ export const signupUser = async (req: Request, res: Response) => {
         first_name: firstName,
         last_name: lastName,
         email: email.toLowerCase(),
-        password
+        password,
+        calling_code: callingCode,
+        phone_number: phoneNumber
     }
  })
     if (!created) return res.status(409).send({ error: 'Email already in use' });

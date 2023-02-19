@@ -9,6 +9,8 @@ interface UserAttributes{
   last_name: string;
   password: string;
   email: string;
+  calling_code: string;
+  phone_number: string;
 
 }
 
@@ -56,7 +58,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
       allowNull: false,
       unique: true
     },
-  }, {
+    calling_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone_number: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
+   }, {
     sequelize,
     modelName: 'User',
     underscored: true,

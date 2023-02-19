@@ -11,7 +11,7 @@ let mailTransporter = nodemailer.createTransport({
 
 
 const Mailer ={
-    send: async function({to, subject,text}: { to: string, subject: string,text:string }){
+    send: async({to, subject,text}: { to: string, subject: string,text:string }) => {
         let mailOptions = {
             from: process.env.MAIL_SENDER as string,
             to,

@@ -2,6 +2,7 @@ import Mailer from "../utils/mailer";
 import models from "../database/models";
 import { Op } from "sequelize";
 import dayjs from "dayjs";
+import  SendMessage  from "../utils/smsMessage";
 
 
 const notificationsJob = async () => {
@@ -37,9 +38,14 @@ const notificationsJob = async () => {
     reminders.map((remind: any) => {
         Mailer.send({
             to: `${remind?.user?.email}`,
-            subject: `Medication Reminder.`,
-            text: `Hey ${remind?.user?.first_name} it's time to take your ${remind?.drug_name} medication.`
+            subject: `💊Medication Reminder💊.`,
+            text: `Hey ${remind?.user?.first_name} it's time to take your ${remind?.drug_name} medication. Health is wealth 🙂`
         });
+
+        SendMessage.sendText({
+            to: `${remind?.user?.calling_code}${remind?.user?.phone_number}`.trim(),
+                body: `💊Medication Reminder 💊. Hey ${remind?.user?.first_name} it's time to take your ${remind?.drug_name} medication. Health is wealth 🙂`
+            })
     })
 
 }

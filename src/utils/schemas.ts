@@ -27,6 +27,12 @@ export const schemas = {
             }),
         email: Joi.string().email({minDomainSegments: 2}).lowercase().required(),
         password: Joi.string().min(8).required(),
+        callingCode: Joi.string().required(),
+        phoneNumber: Joi.string().length(10).required() .messages({
+            "string.pattern.base": `"phoneNumber" should be ten numbers only`,
+            "string.pattern.empty": `"name" cannot be an empty field`,
+            "any.required": `"name" is a required.`,
+        }),
     }),
     loginSchema: Joi.object().keys({
         email: Joi.string().email({minDomainSegments: 2}).lowercase().required(),
@@ -46,7 +52,7 @@ export const schemas = {
         unit: Joi.string().valid('mg', 'ml', 'micrograms'),
         numOfIntake: Joi.string().valid('1', '2', '3', '4'),
         endDate: Joi.date().greater('now').format('YYYY-MM-DD'),
-        status: Joi.string().valid('inactive', 'active'),
+        status: Joi.string().valid('ended', 'active'),
         firstTimer: Joi.string()
             .regex(timeFormat)
             .required()

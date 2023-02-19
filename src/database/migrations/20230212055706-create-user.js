@@ -31,6 +31,14 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      calling_code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      phone_number: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
